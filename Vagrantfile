@@ -10,15 +10,18 @@ Vagrant.configure("2") do |config|
 #  config.berkshelf.enabled = true
 #  config.omnibus.chef_version = :latest
 
-  config.vm.provider "virtualbox" do |v|
+  config.vm.provider "virtualbox" do |v, override|
     v.customize ["modifyvm", :id, "--memory", 1024]
+    override.vm.box_url  = 'https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box'
+  end
+  config.vm.provider "lxc" do |v, override|
+    override.vm.box  = "fgrehm/precise64-lxc"
   end
 
   config.vm.define :dockstack do |dockstack|
     dockstack.vm.box      = 'opscode-ubuntu-12.04'
-    dockstack.vm.box_url  = 'https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box'
     dockstack.vm.hostname = 'docker-ubuntu-1204'
-    dockstack.vm.network :private_network, ip: '192.168.50.11'
+#    dockstack.vm.network :private_network, ip: '192.168.50.11'
     dockstack.vm.provider "virtualbox" do |v|
       v.customize ["modifyvm", :id, "--memory", 4096]
     end
